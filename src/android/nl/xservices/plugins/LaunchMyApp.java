@@ -1,6 +1,7 @@
 package nl.xservices.plugins;
 
 import android.content.Intent;
+import android.util.Log;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaInterface;
@@ -17,6 +18,8 @@ import java.util.Locale;
 
 public class LaunchMyApp extends CordovaPlugin {
 
+  private static final String LOG_TAG = "LaunchMyApp";
+  
   private static final String ACTION_CHECKINTENT = "checkIntent";
   private static final String ACTION_CLEARINTENT = "clearIntent";
   private static final String ACTION_GETLASTINTENT = "getLastIntent";
@@ -73,6 +76,7 @@ public class LaunchMyApp extends CordovaPlugin {
   @Override
   public void onNewIntent(Intent intent) {
     final String intentString = intent.getDataString();
+    Log.i(LOG_TAG, "received intent: " + intent.toString());
     if (intentString != null && intent.getScheme() != null) {
       if (resetIntent){
         intent.setData(null);
@@ -82,6 +86,7 @@ public class LaunchMyApp extends CordovaPlugin {
         escapeJavaStyleString(writer, intentString, true, false);
         webView.loadUrl("javascript:handleOpenURL('" + URLEncoder.encode(writer.toString()) + "');");
       } catch (IOException ignore) {
+        Log.w(LOG_TAG, "cannot handle intent: " + intentString);
       }
     }
   }
