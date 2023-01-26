@@ -8,7 +8,7 @@
       // Clear the intent when we have a handler (note that this is only done when the preference 'CustomURLSchemePluginClearsAndroidIntent' is 'true' in config.xml
       cordova.exec(
           null,
-          null,
+          function(error){console.error("cannot init custom-url-scheme plugin (clearIntent)", error)},,
           "LaunchMyApp",
           "clearIntent",
           []);
@@ -22,7 +22,7 @@
   function triggerOpenURL() {
     cordova.exec(
         waitForAndCallHandlerFunction,
-        null,
+        function(error){console.error("cannot init custom-url-scheme plugin (checkIntent)", error)},
         "LaunchMyApp",
         "checkIntent",
         []);
