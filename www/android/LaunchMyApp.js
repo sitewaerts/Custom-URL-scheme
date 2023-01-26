@@ -22,7 +22,7 @@
   function triggerOpenURL() {
     cordova.exec(
         waitForAndCallHandlerFunction,
-        function(error){console.log("custom-url-scheme plugin: no initial open url found", error)},
+        function(error){console.log("custom-url-scheme plugin: no initial open url found.", error)},
         "LaunchMyApp",
         "checkIntent",
         []);
