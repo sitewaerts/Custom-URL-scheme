@@ -81,6 +81,22 @@
     </config-file>
   </platform>
 
+  <!-- electron -->
+  <platform name="electron">
+
+    <hook type="before_build" src="hooks/before_build_electron.js"/>
+    <!--
+      better approach
+      requires config-file support for json files in cordova-common
+     -->
+<!--    <config-file target="platforms/electron/build.json" parent="config.protocols" mode="merge">-->
+<!--      [{name:"LaunchMyApp", schemes: ["$URL_SCHEME"]}]-->
+<!--    </config-file>-->
+
+    <framework src="src/electron" />
+
+  </platform>
+
   <!-- windows8 -->
   <platform name="windows8">
     <preference name="WINDOWS_START_PAGE" default="www/index.html" />
