@@ -19,6 +19,8 @@
  *
  */
 
+const ID = "cordova-plugin-customurlscheme";
+
 const schemePlugin = {};
 
 
@@ -39,8 +41,8 @@ const plugin = function (action, args, callbackContext)
         );
     } catch (e)
     {
-        console.error("cordova-plugin-customurlscheme: "+ action + ' failed', e);
-        callbackContext.error({message: action + ' failed', cause: e});
+        console.error(ID + ": "+ action + ' failed', e);
+        callbackContext.error({message: ID + ": " + action + ' failed', cause: e});
     }
     return true;
 }
@@ -48,7 +50,7 @@ const plugin = function (action, args, callbackContext)
 plugin.configure = (ctx) =>
 {
     const scheme = ctx.getVariable("URL_SCHEME");
-    console.log("cordova-plugin-customurlscheme: URL_SCHEME=" + scheme);
+    console.log(ID + ": URL_SCHEME=" + scheme);
 
     const app = ctx.getApp();
 
@@ -63,7 +65,7 @@ plugin.configure = (ctx) =>
 plugin.initialize = (ctx) =>
 {
     if (_initialized)
-        return Promise.reject(new Error("cordova-plugin-customurlscheme already initialized"));
+        return Promise.reject(new Error(ID + ": already initialized"));
     _initialized = true;
 
     /**
@@ -77,10 +79,10 @@ plugin.initialize = (ctx) =>
             if (window['handleOpenURL'])
                 window.handleOpenURL(url);
             else
-                console.warn("missing window.handleOpenURL", url);
+                console.warn(ID + ": missing window.handleOpenURL", url);
         } catch (e)
         {
-            console.error("cannot handle url:" + url, e);
+            console.error(ID + ": cannot handle url:" + url, e);
         }
 
     }
