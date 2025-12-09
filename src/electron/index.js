@@ -19,12 +19,19 @@
  *
  */
 
-const ID = "cordova-plugin-customurlscheme";
+const PLUGIN_ID = "cordova-plugin-customurlscheme";
 
 const schemePlugin = {};
 
 
 let _initialized = false;
+
+/**
+ *
+ * @type {string | null}
+ * @private
+ */
+let _scheme = null;
 
 /**
  * @type {CordovaElectronPlugin}
@@ -41,16 +48,16 @@ const plugin = function (action, args, callbackContext)
         );
     } catch (e)
     {
-        console.error(ID + ": "+ action + ' failed', e);
-        callbackContext.error({message: ID + ": " + action + ' failed', cause: e});
+        console.error(PLUGIN_ID + ": "+ action + ' failed', e);
+        callbackContext.error({message: PLUGIN_ID + ": " + action + ' failed', cause: e});
     }
     return true;
 }
 
 plugin.configure = (ctx) =>
 {
-    const scheme = ctx.getVariable("URL_SCHEME");
-    console.log(ID + ": URL_SCHEME=" + scheme);
+    _scheme = ctx.getVariable("URL_SCHEME");
+    console.log(PLUGIN_ID + ": URL_SCHEME=" + _scheme);
 
     const app = ctx.getApp();
 
@@ -65,7 +72,7 @@ plugin.configure = (ctx) =>
 plugin.initialize = (ctx) =>
 {
     if (_initialized)
-        return Promise.reject(new Error(ID + ": already initialized"));
+        return Promise.reject(new Error(PLUGIN_ID + ": already initialized"));
     _initialized = true;
 
     /**
@@ -76,20 +83,26 @@ plugin.initialize = (ctx) =>
     function handleUrl(url){
         try
         {
-            if (window['handleOpenURL'])
-                window.handleOpenURL(url);
-            else
-                console.warn(ID + ": missing window.handleOpenURL", url);
+            ctx.sendPluginEvent({pluginId: PLUGIN_ID, eventName: 'handleURL', payload: url});
         } catch (e)
         {
-            console.error(ID + ": cannot handle url:" + url, e);
+            console.error(PLUGIN_ID + ": cannot send handle url:" + url, e);
         }
 
     }
 
-    // for windows & linux
+    // see https://www.bigbinary.com/blog/deep-link-electron-app
     // see https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app
+
     const app = ctx.getApp();
+
+
+    // for macOS
+    app.on('open-url', (event, url) => {
+        handleUrl(url);
+    })
+
+    // for windows & linux
     app.on('second-instance', (event, commandLine, workingDirectory) => {
         const mainWindow = ctx.getMainWindow();
         // Someone tried to run a second instance, we should focus our window.
@@ -100,12 +113,15 @@ plugin.initialize = (ctx) =>
         }
         // the commandLine is array of strings in which last element is deep link url
         handleUrl(commandLine.pop())
-    })
+    });
 
-    // for macOS
-    app.on('open-url', (event, url) => {
-        handleUrl(url);
-    })
+    app.whenReady().then(() => {
+        const customUrl = process.argv.find(item => item.startsWith(_scheme + "://"));
+        if (customUrl) {
+            handleUrl(customUrl);
+        }
+    });
+
 
 }
 

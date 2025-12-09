@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-customurlscheme",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "Launch your app by using this URL:  mycoolapp://, you can add a path and even pass params like this: mycoolerapp://somepath?foo=bar",
   "cordova": {
     "id": "cordova-plugin-customurlscheme",
@@ -27,7 +27,8 @@
     "cordova-ios",
     "cordova-android",
     "cordova-windows",
-    "cordova-windows8"
+    "cordova-windows8",
+    "cordova-electron"
   ],
   "engines": [
     {

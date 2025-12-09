@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="cordova-plugin-customurlscheme"
-        version="5.0.2">
+        version="5.0.3">
 
   <name>Custom URL scheme</name>
 
@@ -84,14 +84,17 @@
   <!-- electron -->
   <platform name="electron">
 
-    <hook type="before_build" src="hooks/before_build_electron.js"/>
+    <hook type="after_prepare" src="src/electron/hooks/update_build_json.js"/>
     <!--
-      better approach
-      requires config-file support for json files in cordova-common
+      better approach than the hook would be (requires config-file support for json files in cordova-common):
      -->
 <!--    <config-file target="platforms/electron/build.json" parent="config.protocols" mode="merge">-->
-<!--      [{name:"LaunchMyApp", schemes: ["$URL_SCHEME"]}]-->
+<!--      [{name:"custom-url-scheme", schemes: ["$URL_SCHEME"]}]-->
 <!--    </config-file>-->
+
+    <js-module src="www/electron/LaunchMyApp.js" name="LaunchMyApp">
+      <clobbers target="window.plugins.launchmyapp" />
+    </js-module>
 
     <framework src="src/electron" />
 
