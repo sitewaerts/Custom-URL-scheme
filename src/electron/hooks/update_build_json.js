@@ -39,7 +39,7 @@ function loadBuildJson(context)
 
 function writeBuildJson(context, buildJson)
 {
-    fs.writeFileSync(buildJsonPath(context), JSON.stringify(buildJson));
+    fs.writeFileSync(buildJsonPath(context), JSON.stringify(buildJson, null, 2), 'utf8');
 }
 
 module.exports = function (context)
